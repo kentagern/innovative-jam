@@ -8,4 +8,4 @@ CONSUMER_SECRET
 ACCESS_KEY
 ACCESS_SECRET
 
-This code is open source under the GNU General Public License version 3 (GPL-3.0). If you use my code, attribution in the source code or resultant product is appreciated :) also why not drop me a line and let me know how you used it, or send me a pull request with any improvements you made?
+This code is open source under the GNU General Public License version 3 (GPL-3.0). No attribution required, but appreciated nonetheless! Why not drop me a line and let me know how you used it, or send me a pull request with any improvements you made?
