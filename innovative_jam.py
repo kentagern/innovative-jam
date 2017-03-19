@@ -5,6 +5,7 @@ import tweepy
 from account_settings import *
 from jam_recipe import *
 from kitchen.text.converters import getwriter
+from random import randrange
 
 UTF8Writer = getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
@@ -24,11 +25,12 @@ def make_jam():
     return get_full_tweet(jname)
     
 
-try:
-    api.update_status(make_jam())
-except:
-    pass
-    
+while True:
+    try:
+        api.update_status(make_jam())
+    except:
+        pass
+    time.sleep(randrange(3600,43200))
 
 
 
