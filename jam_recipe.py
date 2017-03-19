@@ -161,7 +161,7 @@ def get_jam_name(seed):
 def get_hashtag(jname):
     # add some temporary tags based on the current name
     # we strip whitespace from them to make them more hashtaggeriffic
-    temptags = ["".join(jname.split()), "".join(get_adjective().split()) + "".join((jname.split()))]
+    temptags = ["".join(jname.split()), "".join(get_adjective().split()) + "".join((jname.split())), "".join(jname.split()) + "ontoast", "brexitmeans" + "".join(jname.split()), "".join(jname.split()) + "please"]
     temptags += hashtags
     return "#" + temptags[randrange(0, len(temptags))]
 
@@ -200,7 +200,6 @@ def get_full_tweet(jname):
     elif rint == 2:
         jstring = get_starter_adjective() + " " + get_adjective() + " " + jname + " " + get_hashtag(jname) + " " + get_hashtag(jname)
     
-    
     # [jamname] : a [adj] [jamtype] made with [ingredient] [hashtag]
     elif rint == 3:
         kingr = get_ingredient()
@@ -208,7 +207,14 @@ def get_full_tweet(jname):
     
     # why not spice up your [meal] with [adj] [jam]    
     elif rint == 4:
-        jstring = "why not spice up your " + get_meal() + " with " + get_adjective() + " " +  jname + " " + get_hashtag(jname)
+        sint = randrange(0,3)
+        if sint == 0:
+            jstring = "why not "
+        elif sint == 1:
+            jstring = "this weekend, "
+        else:
+            jstring = ""
+        jstring = jstring + "spice up your " + get_meal() + " with " + get_adjective() + " " +  jname + " " + get_hashtag(jname)
     
     
     
