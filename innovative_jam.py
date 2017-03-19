@@ -21,20 +21,14 @@ set_up_vars()
 def make_jam():
     jingr = get_ingredient()
     jname = get_jam_name(jingr)
-    jstring = get_full_tweet(jname)
+    return get_full_tweet(jname)
     
-    print jstring
 
-
-make_jam()
-
-#api.update_status(tstring)
-i = 0
-while i < 100:
-    make_jam()
+try:
+    api.update_status(make_jam())
+except:
+    pass
     
-    i = i + 1
-    time.sleep(1)
 
 
 
