@@ -12,17 +12,20 @@ adjectives = []
 starter_adjectives = [] # as above but includes adjectives that can only go at the start
 hashtags = []
 meals = []
+nationalities = []
+opinion_phrases = []
 
 
-def file_to_array(the_file):
+def file_to_set(the_file):
     filename = open(the_file, "r")
-    the_array = []
+    the_set = Set([])
     
     for line in filename:
-        the_array.append(line.strip())
+        the_set.add(line.strip())
+        
     filename.close
     
-    return the_array
+    return the_set
 
 
 # strip indefinite articles and convert to lowercase
@@ -36,6 +39,7 @@ def sanitise_label(label):
     return label.lower()
 
 
+# get sanitised edge labels from a given api string
 def get_edge_labels(apistring):
     res = (requests.get(apistring).json())['edges']
     
@@ -59,32 +63,30 @@ def set_up_vars():
     global starter_adjectives
     global hashtags
     global meals
+    global nationalities
+    global opinion_phrases
     
     # we create sets and then turn into lists to easily remove duplicates
-    set_food_types = Set(file_to_array('res/foodtypes.txt'))
-    food_types = list(set_food_types)
-    
-    set_jam_types = Set(file_to_array('res/jamtypes.txt'))
-    jam_types = list(set_jam_types)
+    food_types = list(file_to_set('res/foodtypes.txt'))
 
-    set_non_latin_langs = Set(file_to_array('res/nonlatinlangs.txt'))
-    non_latin_langs = list(set_non_latin_langs)
+    jam_types = list(file_to_set('res/jamtypes.txt'))
 
-    set_countries = Set(file_to_array('res/countries.txt'))
-    countries = list(set_countries)
+    non_latin_langs = list(file_to_set('res/nonlatinlangs.txt'))
 
-    set_adjectives = Set(file_to_array('res/adjectives.txt'))
-    adjectives = list(set_adjectives)
+    countries = list(file_to_set('res/countries.txt'))
 
-    # also use the above list as a basis for our starter adjectives
-    set_adjectives.update(Set(file_to_array('res/starter_adjectives.txt')))    
-    starter_adjectives = list(set_adjectives)
-    
-    set_hashtags = Set(file_to_array('res/hashtags.txt'))
-    hashtags = list(set_hashtags)
-    
-    set_meals = Set(file_to_array('res/meals.txt'))
-    meals = list(set_meals)
+    adjectives = list(file_to_set('res/adjectives.txt'))
+
+    # also use the above list as a basis for our starter adjectives   
+    starter_adjectives = list(file_to_set('res/starter_adjectives.txt')) + adjectives
+ 
+    hashtags = list(file_to_set('res/hashtags.txt'))
+
+    meals = list(file_to_set('res/meals.txt'))
+
+    nationalities = list(file_to_set('res/nationalities.txt'))
+
+    opinion_phrases = list(file_to_set('res/unlikely_opinion_phrases.txt'))
 
     set_ingredients = Set([])
     # pull types of food
@@ -93,35 +95,13 @@ def set_up_vars():
 
     ingredients = list(set_ingredients)
     
-    
+
+def get_rand_element(the_array):
+    return the_array[randrange(0, len(the_array))]
+
 
 def get_ingredient():
-    return ingredients[randrange(0, len(ingredients))]
-
-
-
-def get_country():
-    return countries[randrange(0, len(countries))]
-
-
-
-def get_adjective():
-    return adjectives[randrange(0, len(adjectives))]
-
-
-
-def get_starter_adjective():
-    return starter_adjectives[randrange(0, len(starter_adjectives))]
-
-
-
-def get_jam_type():
-    return jam_types[randrange(0, len(jam_types))]
-
-
-def get_meal():
-    return meals[randrange(0, len(meals))]
-
+    return get_rand_element(ingredients)
 
 # get a random edge returned by [apistring]
 def get_word(apistring):
@@ -143,7 +123,7 @@ def get_jam_name(seed):
     # how unoriginal
     if jword == 0 or jword is None:
         jname = seed
-        jname = jname + " " + get_jam_type()
+        jname = jname + " " + get_rand_element(jam_types)
 
     else:
         jname = sanitise_label(jword['label'])
@@ -151,7 +131,7 @@ def get_jam_name(seed):
         # we don't want to add jam types to non-latin languages
         # it would look weird
         if jword['language'] not in non_latin_langs:
-            jname = jname + " " + get_jam_type()
+            jname = jname + " " + get_rand_element(jam_types)
         
     return jname
 
@@ -161,7 +141,7 @@ def get_jam_name(seed):
 def get_hashtag(jname):
     # add some temporary tags based on the current name
     # we strip whitespace from them to make them more hashtaggeriffic
-    temptags = ["".join(jname.split()), "".join(get_adjective().split()) + "".join((jname.split())), "".join(jname.split()) + "ontoast", "brexitmeans" + "".join(jname.split()), "".join(jname.split()) + "please"]
+    temptags = ["".join(jname.split()), "".join(get_rand_element(adjectives).split()) + "".join((jname.split())), "".join(jname.split()) + "ontoast", "brexitmeans" + "".join(jname.split()), "".join(jname.split()) + "please"]
     temptags += hashtags
     return "#" + temptags[randrange(0, len(temptags))]
 
@@ -177,33 +157,33 @@ def clipped_str(jname, jstring):
     elif len(jname) > 140:
         return jname[:140]
     else:
-        hashtag = get_hashtag()
-        if (len(jname) + len(hashtag)) <= 140:
-            return jname + hashtag
+        hashtag = get_hashtag(jname)
+        if (len(jname) + len(hashtag) + 1) <= 140:
+            return jname + " " + hashtag
         else:
             return jname
 
 
 # get a random description
 def get_full_tweet(jname):
-    rint = randrange(0,5)
+    rint = randrange(5,6)
     
-    # [jamname]: the people of [country] will love this [adj] [jamtype] [hashtag]
+    # [jamname]: the [peoplegroup] of [country] [will have some opinion] [adj] [jamtype] [hashtag]
     if rint == 0:
-        jstring = jname + ": the people of " + get_country() + " will love this " + get_adjective() + " " + get_jam_type() + " " + get_hashtag(jname)
+        jstring = jname + ": the " + get_rand_element(nationalities) + " of " + get_rand_element(countries) + " " + get_rand_element(opinion_phrases) + " " + get_rand_element(adjectives) + " " + get_rand_element(jam_types) + " " + get_hashtag(jname)
     
     # [country] needs [jamname] [hashtag]
     elif rint == 1:
-        jstring = get_country() + " needs " + jname + " " + get_hashtag(jname)
+        jstring = get_rand_element(countries) + " needs " + jname + " " + get_hashtag(jname)
     
     # [adj] [adj] [jamname] [hashtag] [hashtag]
     elif rint == 2:
-        jstring = get_starter_adjective() + " " + get_adjective() + " " + jname + " " + get_hashtag(jname) + " " + get_hashtag(jname)
+        jstring = get_rand_element(starter_adjectives) + " " + get_rand_element(adjectives) + " " + jname + " " + get_hashtag(jname) + " " + get_hashtag(jname)
     
     # [jamname] : a [adj] [jamtype] made with [ingredient] [hashtag]
     elif rint == 3:
         kingr = get_ingredient()
-        jstring = jname + ": a " + get_adjective() + " " + get_jam_type() + " made with " + get_ingredient() + " " + get_hashtag(kingr) + " " + get_hashtag(jname)
+        jstring = jname + ": a " + get_rand_element(adjectives) + " " + get_jam_type() + " made with " + get_rand_element(ingredients) + " " + get_hashtag(kingr) + " " + get_hashtag(jname)
     
     # why not spice up your [meal] with [adj] [jam]    
     elif rint == 4:
@@ -214,16 +194,12 @@ def get_full_tweet(jname):
             jstring = "this weekend, "
         else:
             jstring = ""
-        jstring = jstring + "spice up your " + get_meal() + " with " + get_adjective() + " " +  jname + " " + get_hashtag(jname)
+        jstring = jstring + "spice up your " + get_rand_element(meals) + " with " + get_rand_element(adjectives) + " " +  jname + " " + get_hashtag(jname)
     
-    
+    # Hi #[peoplegroup]! Have you thought about importing [adj] [jname] to your native [country]? [hashtag]
+    elif rint == 5:
+        jstring = "Hi #" + get_rand_element(nationalities) + "! Have you thought about importing " + get_rand_element(adjectives) + " " + jname + " to your native " + get_rand_element(countries) + "? " + get_hashtag(jname)
+        
+
     
     return clipped_str(jname, jstring)
-
-
-
-
-
-
-
-
