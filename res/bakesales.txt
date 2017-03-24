@@ -1,0 +1,8 @@
+exports exhibition
+bakesale
+street stall
+county fair
+quaint olde english market
+school fete
+patriotic demonstration
+traditional cafe

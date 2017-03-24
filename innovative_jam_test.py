@@ -7,11 +7,13 @@ from jam_recipe import *
 from kitchen.text.converters import getwriter
 from random import randrange
 
-
-# Innovative Jam
-# Automatically tweet jam-based creative economic solutions
+# Innovative Jam Test run
+# Use this file to print test runs to stdout
 if __name__ =='__main__':
-    
+    # enable unicode in stdout
+    UTF8Writer = getwriter('utf8')
+    sys.stdout = UTF8Writer(sys.stdout)
+     
     # set up Twitter API
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -26,12 +28,8 @@ if __name__ =='__main__':
        
 
     while True:
-        try:
-            #api.update_status(make_jam())
-            print make_jam()
-        except:
-            pass
-        time.sleep(randrange(3600,43200))
+        print make_jam()
+        time.sleep(5)
 
 
 

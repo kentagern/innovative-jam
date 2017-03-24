@@ -14,6 +14,7 @@ hashtags = []
 meals = []
 nationalities = []
 opinion_phrases = []
+bakesales = []
 
 
 def file_to_set(the_file):
@@ -65,6 +66,7 @@ def set_up_vars():
     global meals
     global nationalities
     global opinion_phrases
+    global bakesales
     
     # we create sets and then turn into lists to easily remove duplicates
     food_types = list(file_to_set('res/foodtypes.txt'))
@@ -87,6 +89,8 @@ def set_up_vars():
     nationalities = list(file_to_set('res/nationalities.txt'))
 
     opinion_phrases = list(file_to_set('res/unlikely_opinion_phrases.txt'))
+
+    bakesales = list(file_to_set('res/bakesales.txt'))
 
     set_ingredients = Set([])
     # pull types of food
@@ -122,16 +126,18 @@ def get_jam_name(seed):
     # if we didn't get a result we'll just use the ingredient
     # how unoriginal
     if jword == 0 or jword is None:
-        jname = seed
-        jname = jname + " " + get_rand_element(jam_types)
+        jname = seed + " " + get_rand_element(jam_types)
 
     else:
         jname = sanitise_label(jword['label'])
         
-        # we don't want to add jam types to non-latin languages
-        # it would look weird
-        if jword['language'] not in non_latin_langs:
+        # turns out it will make more sense to specify non-latin things are a type of jam
+		# who knew?!
+        if jword['language'] in non_latin_langs:
+            jname = "'" + jname + "' " + get_rand_element(jam_types)
+        else:
             jname = jname + " " + get_rand_element(jam_types)
+			
         
     return jname
 
@@ -166,7 +172,7 @@ def clipped_str(jname, jstring):
 
 # get a random description
 def get_full_tweet(jname):
-    rint = randrange(5,6)
+    rint = randrange(0, 9)
     
     # [jamname]: the [peoplegroup] of [country] [will have some opinion] [adj] [jamtype] [hashtag]
     if rint == 0:
@@ -183,7 +189,7 @@ def get_full_tweet(jname):
     # [jamname] : a [adj] [jamtype] made with [ingredient] [hashtag]
     elif rint == 3:
         kingr = get_ingredient()
-        jstring = jname + ": a " + get_rand_element(adjectives) + " " + get_jam_type() + " made with " + get_rand_element(ingredients) + " " + get_hashtag(kingr) + " " + get_hashtag(jname)
+        jstring = jname + ": a " + get_rand_element(adjectives) + " " + get_rand_element(jam_types) + " made with " + get_rand_element(ingredients) + " " + get_hashtag(kingr) + " " + get_hashtag(jname)
     
     # why not spice up your [meal] with [adj] [jam]    
     elif rint == 4:
@@ -200,6 +206,16 @@ def get_full_tweet(jname):
     elif rint == 5:
         jstring = "Hi #" + get_rand_element(nationalities) + "! Have you thought about importing " + get_rand_element(adjectives) + " " + jname + " to your native " + get_rand_element(countries) + "? " + get_hashtag(jname)
         
+    # We found [adj] [jamname] [jamtype] at a [place] and can't wait to #export it! What a [jamtype]! [hashtag]
+    elif rint == 6:
+        jstring = "We found " + get_rand_element(adjectives) + " " + jname + " at a " + get_rand_element(bakesales) + " and can't wait to #export it! What a " + get_rand_element(jam_types) + "! " + get_hashtag(jname)
 
-    
+    # Who knew [jingr] [jingr] and [jingr] would taste so good?
+    elif rint == 7:
+        jstring = "Who knew " + get_rand_element(ingredients) + ", " + get_rand_element(ingredients) + " & " + get_rand_element(ingredients) + " " + get_rand_element(jam_types) + " would taste so #" + get_rand_element(adjectives) + "? " + get_hashtag(jname)
+
+    # [adj] [jamname] find it at your local [place] [hashtag] [hashtag]
+    elif rint == 8:
+        jstring = get_rand_element(starter_adjectives) + " " + jname + ". find it at your local " + get_rand_element(bakesales) + " " + get_hashtag(jname)
+        
     return clipped_str(jname, jstring)

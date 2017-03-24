@@ -25,7 +25,6 @@ Boers
 Bosniaks
 Brazilians
 Bretons
-British
 British Virgin Islanders
 Bruneians
 Bulgarians
@@ -55,7 +54,6 @@ East Timorese
 Ecuadorians
 Egyptians
 Emiratis
-English
 Eritreans
 Estonians
 Ethiopians
