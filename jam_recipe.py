@@ -107,6 +107,7 @@ def get_rand_element(the_array):
 def get_ingredient():
     return get_rand_element(ingredients)
 
+
 # get a random edge returned by [apistring]
 def get_word(apistring):
     res = (requests.get(apistring).json())['edges']
@@ -119,25 +120,18 @@ def get_word(apistring):
 
 # generate a name which is a synonym of [seed]
 # we don't care about language here - we are exporting, after all
-#    foreign languages will probably make it more appealing, right?
+# foreign languages will probably make it more appealing to foreign people, right?
 def get_jam_name(seed):
     jword = get_word("http://api.conceptnet.io/query?rel=/r/Synonym&limit=100&node=/c/en/" + seed)
-    
+
     # if we didn't get a result we'll just use the ingredient
     # how unoriginal
     if jword == 0 or jword is None:
-        jname = seed + " " + get_rand_element(jam_types)
-
+        jname = seed
     else:
-        jname = sanitise_label(jword['label'])
-        
-        # turns out it will make more sense to specify non-latin things are a type of jam
-		# who knew?!
-        if jword['language'] in non_latin_langs:
-            jname = "'" + jname + "' " + get_rand_element(jam_types)
-        else:
-            jname = jname + " " + get_rand_element(jam_types)
-			
+        jname = jword['label']
+
+    jname = jname + " " + get_rand_element(jam_types)
         
     return jname
 
@@ -172,7 +166,7 @@ def clipped_str(jname, jstring):
 
 # get a random description
 def get_full_tweet(jname):
-    rint = randrange(0, 9)
+    rint = randrange(0, 10)
     
     # [jamname]: the [peoplegroup] of [country] [will have some opinion] [adj] [jamtype] [hashtag]
     if rint == 0:
@@ -208,7 +202,7 @@ def get_full_tweet(jname):
         
     # We found [adj] [jamname] [jamtype] at a [place] and can't wait to #export it! What a [jamtype]! [hashtag]
     elif rint == 6:
-        jstring = "We found " + get_rand_element(adjectives) + " " + jname + " at a " + get_rand_element(bakesales) + " and can't wait to #export it! What a " + get_rand_element(jam_types) + "! " + get_hashtag(jname)
+        jstring = "We found " + get_rand_element(starter_adjectives) + " " + jname + " at a " + get_rand_element(bakesales) + " and can't wait to #export it! What a " + get_rand_element(jam_types) + "! " + get_hashtag(jname)
 
     # Who knew [jingr] [jingr] and [jingr] would taste so good?
     elif rint == 7:
@@ -217,5 +211,11 @@ def get_full_tweet(jname):
     # [adj] [jamname] find it at your local [place] [hashtag] [hashtag]
     elif rint == 8:
         jstring = get_rand_element(starter_adjectives) + " " + jname + ". find it at your local " + get_rand_element(bakesales) + " " + get_hashtag(jname)
+
+    # apparently we now threaten war with people for funsies?
+    # BRITAIN FTW
+    # #UK threatened to go to war with you? Celebrate with some [adj] [jamname] [hashtag]
+    elif rint == 9:
+        jstring = "#UK threatened to go to war with you? Celebrate with " + get_rand_element(starter_adjectives) + " " + jname + " " + get_hashtag(jname)
         
     return clipped_str(jname, jstring)

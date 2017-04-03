@@ -27,8 +27,7 @@ if __name__ =='__main__':
 
     while True:
         try:
-            #api.update_status(make_jam())
-            print make_jam()
+            api.update_status(make_jam())
         except:
             pass
         time.sleep(randrange(3600,43200))

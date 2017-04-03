@@ -6,3 +6,4 @@ preserve
 spread
 curd
 butter
+compote
