@@ -1,6 +1,8 @@
 # innovative-jam
 Creative economic solutions twitter bot, based on http://conceptnet.io/ api.
 
+Previous instructions prior to the whole X debacle:
+
 You'll need to make a Twitter developer account at apps.twitter.com and then create a new Twitter app. Add your own account_settings.py file with the following details from that site, found under the 'keys and access tokens' tab:
 
 CONSUMER_KEY
@@ -11,5 +13,4 @@ ACCESS_KEY
 
 ACCESS_SECRET
 
-
-This code is open source under the GNU General Public License version 3 (GPL-3.0). No attribution required, but appreciated nonetheless! Why not drop me a line and let me know how you used it, or send me a pull request with any improvements you made?
+This code is copyrighted under CC-BY 4.0 https://creativecommons.org/licenses/by/4.0/legalcode
