@@ -1,6 +1,8 @@
 # innovative-jam
 Creative economic solutions twitter bot, based on http://conceptnet.io/ api.
 
+Previous instructions prior to the whole X debacle:
+
 You'll need to make a Twitter developer account at apps.twitter.com and then create a new Twitter app. Add your own account_settings.py file with the following details from that site, found under the 'keys and access tokens' tab:
 
 CONSUMER_KEY
